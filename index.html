@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fed Panel 45</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Fed Panel 45</h1>
+  <p>Gerçek zamanlı müşteri sorgu paneli</p>
+
+  <input type="text" id="searchInput" placeholder="İsim veya şehir girin...">
+
+  <table id="resultsTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ad</th>
+        <th>Soyad</th>
+        <th>Şehir</th>
+        <th>E-posta</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadData() {
+      const response = await fetch('data.json');
+      const data = await response.json();
+      const tableBody = document.querySelector('#resultsTable tbody');
+      const searchInput = document.getElementById('searchInput');
+
+      function render(filter = '') {
+        tableBody.innerHTML = '';
+        const filtered = data.filter(c =>
+          c.ad.toLowerCase().includes(filter.toLowerCase()) ||
+          c.soyad.toLowerCase().includes(filter.toLowerCase()) ||
+          c.sehir.toLowerCase().includes(filter.toLowerCase())
+        );
+        filtered.forEach(c => {
+          const row = `<tr>
+            <td>${c.id}</td>
+            <td>${c.ad}</td>
+            <td>${c.soyad}</td>
+            <td>${c.sehir}</td>
+            <td>${c.email}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      render();
+      searchInput.addEventListener('input', e => render(e.target.value));
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
